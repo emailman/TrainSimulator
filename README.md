@@ -44,13 +44,17 @@ pgzrun "train simulator.py"
 
 ## Controls
 
-- **Click the GO button** to start the train moving toward the next station
-- The train handles acceleration and braking automatically
+- **DEPART button** (green): Click to start the train from a station
+- **STOP button** (red): Appears while train is moving; click to brake smoothly
+- **RESUME button** (orange): Appears when paused mid-journey; click to resume
+- The train handles acceleration and braking automatically when approaching stations
 
 ## How It Works
 
 1. The train starts at NYC station
-2. Press GO to depart—the whistle sounds and the train accelerates
+2. Press DEPART—the whistle sounds and the train accelerates
 3. At max speed (120 mph), it enters cruising mode
-4. As it approaches Miami, it calculates stopping distance and begins braking
-5. Once stopped at Miami, the GO button reappears for the return trip
+4. You can press STOP at any time to smoothly brake the train
+5. When paused mid-journey, press RESUME to continue toward the same destination
+6. As it approaches a station, it calculates stopping distance and begins braking automatically
+7. Once stopped at a station, the DEPART button reappears for the return trip

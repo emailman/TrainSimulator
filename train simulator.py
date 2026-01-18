@@ -2,11 +2,22 @@
 Simulation of a train running between New York City and Miami
 """
 
+from enum import Enum
+
 import pgzrun
 import pygame
 from pygame import Rect
 from pgzero.screen import Screen
 from pgzero.loaders import sounds
+
+
+class State(Enum):
+    STOPPED = "stopped"           # At station, will reverse on GO
+    ACCELERATING = "accelerating"
+    CRUISING = "cruising"
+    DECELERATING = "decelerating"  # Approaching station
+    BRAKING = "braking"           # User-initiated stop
+    PAUSED = "paused"             # Stopped mid-journey
 
 screen: Screen
 
@@ -30,8 +41,7 @@ train_speed = 0
 MAX_SPEED = 4
 ACCELERATION = 0.05
 
-# State: "stopped", "accelerating", "cruising", "decelerating"
-state = "stopped"
+state = State.STOPPED
 target_station = "miami"  # Train starts at NYC, heads to Miami
 
 # GO button
@@ -43,13 +53,13 @@ def draw():
     screen.fill((135, 206, 235))
 
     # Ground
-    screen.draw.rect(Rect(0, TRACK_Y + 20, WIDTH, HEIGHT - TRACK_Y - 20),
-                     (34, 139, 34))
+    screen.draw.filled_rect(Rect(0, TRACK_Y, WIDTH, HEIGHT - TRACK_Y),
+                            (210, 180, 140))
 
-    # Draw tracks (rails and sleepers)
+    # Draw tracks (rails and ties)
     for x in range(50, 850, 30):
         screen.draw.filled_rect(Rect(x, TRACK_Y + 6, 20, 8),
-                                (101, 67, 33))  # Cross ties
+                                (101, 67, 33))  # Ties
     screen.draw.filled_rect(Rect(50, TRACK_Y, 800, 5),
                             (80, 80, 80))  # Top rail
     screen.draw.filled_rect(Rect(50, TRACK_Y + 15, 800, 5),
@@ -75,22 +85,41 @@ def draw():
     # Draw train
     draw_train(train_x, TRACK_Y)
 
-    # Draw GO button when stopped
-    if state == "stopped":
+    # Draw buttons based on state
+    if state == State.STOPPED:
+        # DEPART button (green) - at station
         screen.draw.filled_rect(button, (0, 180, 0))
         screen.draw.rect(button, (0, 100, 0))
-        screen.draw.text("GO", center=button.center, fontsize=32,
+        screen.draw.text("DEPART", center=button.center, fontsize=32,
+                         color="white")
+    elif state == State.PAUSED:
+        # RESUME button (orange) - paused mid-journey
+        screen.draw.filled_rect(button, (255, 180, 0))
+        screen.draw.rect(button, (180, 120, 0))
+        screen.draw.text("RESUME", center=button.center, fontsize=32,
+                         color="white")
+    elif state in (State.ACCELERATING, State.CRUISING, State.DECELERATING):
+        # STOP button (red) - train is moving
+        screen.draw.filled_rect(button, (180, 0, 0))
+        screen.draw.rect(button, (100, 0, 0))
+        screen.draw.text("STOP", center=button.center, fontsize=32,
                          color="white")
 
-    # Status display - distances
+    # Status display
+    if target_station == "miami":
+        route_text = "Silver Meteor - New York City to Miami"
+    else:
+        route_text = "Silver Meteor - Miami to New York City"
+    screen.draw.text(route_text, topleft=(20, 20), fontsize=28, color="black")
+
     dist_to_nyc = (train_x - STATION_NYC_X) * MILES_PER_PIXEL
     dist_to_miami = (STATION_MIAMI_X - train_x) * MILES_PER_PIXEL
     screen.draw.text(f"Distance to New York City: {dist_to_nyc:.0f} miles",
-                     topleft=(20, 20), fontsize=28, color="black")
-    screen.draw.text(f"Distance to Miami: {dist_to_miami:.0f} miles",
                      topleft=(20, 45), fontsize=28, color="black")
-    screen.draw.text(f"Speed: {train_speed * MPH_SCALE:.0f} mph",
+    screen.draw.text(f"Distance to Miami: {dist_to_miami:.0f} miles",
                      topleft=(20, 70), fontsize=28, color="black")
+    screen.draw.text(f"Speed: {train_speed * MPH_SCALE:.0f} mph",
+                     topleft=(20, 95), fontsize=28, color="black")
 
 
 def draw_train(x, track_y):
@@ -146,14 +175,28 @@ def draw_train(x, track_y):
 def update():
     global train_x, train_speed, state, target_station
 
-    if state == "stopped":
+    if state in (State.STOPPED, State.PAUSED):
         return
 
-    if state == "accelerating":
+    # Handle user-initiated braking
+    if state == State.BRAKING:
+        train_speed -= ACCELERATION
+        if train_speed <= 0:
+            train_speed = 0
+            state = State.PAUSED
+        else:
+            # Continue moving while braking
+            if target_station == "miami":
+                train_x += train_speed
+            else:
+                train_x -= train_speed
+        return
+
+    if state == State.ACCELERATING:
         train_speed += ACCELERATION
         if train_speed >= MAX_SPEED:
             train_speed = MAX_SPEED
-            state = "cruising"
+            state = State.CRUISING
 
     # Calculate stopping distance using physics: d = v^2 / (2*a)
     stopping_distance = (train_speed ** 2) / (2 * ACCELERATION)\
@@ -165,16 +208,16 @@ def update():
 
         # Start decelerating when we need to
         if (distance_to_target <= stopping_distance + 5 and
-                state in ("accelerating", "cruising")):
+                state in (State.ACCELERATING, State.CRUISING)):
             sounds.brake.play()
-            state = "decelerating"
+            state = State.DECELERATING
 
-        if state == "decelerating":
+        if state == State.DECELERATING:
             train_speed -= ACCELERATION
             if train_speed <= 0 or train_x >= STATION_MIAMI_X:
                 train_speed = 0
                 train_x = STATION_MIAMI_X
-                state = "stopped"
+                state = State.STOPPED
                 target_station = "nyc"
 
     else:  # Going to NYC
@@ -183,24 +226,36 @@ def update():
 
         # Start decelerating when we need to
         if (distance_to_target <= stopping_distance + 5 and
-                state in ("accelerating", "cruising")):
+                state in (State.ACCELERATING, State.CRUISING)):
             sounds.brake.play()
-            state = "decelerating"
+            state = State.DECELERATING
 
-        if state == "decelerating":
+        if state == State.DECELERATING:
             train_speed -= ACCELERATION
             if train_speed <= 0 or train_x <= STATION_NYC_X:
                 train_speed = 0
                 train_x = STATION_NYC_X
-                state = "stopped"
+                state = State.STOPPED
                 target_station = "miami"
 
 
 def on_mouse_down(pos):
     global state
-    if state == "stopped" and button.collidepoint(pos):
+    if not button.collidepoint(pos):
+        return
+
+    if state == State.STOPPED:
+        # GO button - start from station
         sounds.whistle.play()
-        state = "accelerating"
+        state = State.ACCELERATING
+    elif state == State.PAUSED:
+        # START button - resume from pause
+        sounds.whistle.play()
+        state = State.ACCELERATING
+    elif state in (State.ACCELERATING, State.CRUISING, State.DECELERATING):
+        # STOP button - begin braking
+        sounds.brake.play()
+        state = State.BRAKING
 
 
 pgzrun.go()
