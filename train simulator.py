@@ -19,10 +19,15 @@ class State(Enum):
     BRAKING = "braking"           # User-initiated stop
     PAUSED = "paused"             # Stopped mid-journey
 
+
+class Destination(Enum):
+    NYC = "New York City"
+    MIAMI = "Miami"
+
 screen: Screen
 
 # Window settings
-TITLE = "Silver Meteor"
+TITLE = "Amtrak Silver Meteor"
 WIDTH = 900
 HEIGHT = 450
 
@@ -42,7 +47,7 @@ MAX_SPEED = 4
 ACCELERATION = 0.05
 
 state = State.STOPPED
-target_station = "miami"  # Train starts at NYC, heads to Miami
+target_station = Destination.MIAMI  # Train starts at NYC, heads to Miami
 
 # GO button
 button = Rect(400, 380, 100, 50)
@@ -106,7 +111,7 @@ def draw():
                          color="white")
 
     # Status display
-    if target_station == "miami":
+    if target_station == Destination.MIAMI:
         route_text = "Silver Meteor - New York City to Miami"
     else:
         route_text = "Silver Meteor - Miami to New York City"
@@ -186,7 +191,7 @@ def update():
             state = State.PAUSED
         else:
             # Continue moving while braking
-            if target_station == "miami":
+            if target_station == Destination.MIAMI:
                 train_x += train_speed
             else:
                 train_x -= train_speed
@@ -202,7 +207,7 @@ def update():
     stopping_distance = (train_speed ** 2) / (2 * ACCELERATION)\
         if ACCELERATION > 0 else 0
 
-    if target_station == "miami":
+    if target_station == Destination.MIAMI:
         train_x += train_speed
         distance_to_target = STATION_MIAMI_X - train_x
 
@@ -218,7 +223,7 @@ def update():
                 train_speed = 0
                 train_x = STATION_MIAMI_X
                 state = State.STOPPED
-                target_station = "nyc"
+                target_station = Destination.NYC
 
     else:  # Going to NYC
         train_x -= train_speed
@@ -236,7 +241,7 @@ def update():
                 train_speed = 0
                 train_x = STATION_NYC_X
                 state = State.STOPPED
-                target_station = "miami"
+                target_station = Destination.MIAMI
 
 
 def on_mouse_down(pos):
