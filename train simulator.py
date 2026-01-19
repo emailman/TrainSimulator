@@ -93,24 +93,25 @@ def draw():
     draw_train(train_x, TRACK_Y)
 
     # Draw buttons based on state
-    if state == State.STOPPED:
-        # DEPART button (green) - at station
-        screen.draw.filled_rect(button, (0, 180, 0))
-        screen.draw.rect(button, (0, 100, 0))
-        screen.draw.text("DEPART", center=button.center, fontsize=32,
-                         color="white")
-    elif state == State.PAUSED:
-        # RESUME button (orange) - paused mid-journey
-        screen.draw.filled_rect(button, (255, 180, 0))
-        screen.draw.rect(button, (180, 120, 0))
-        screen.draw.text("RESUME", center=button.center, fontsize=32,
-                         color="white")
-    elif state in (State.ACCELERATING, State.CRUISING, State.DECELERATING):
-        # STOP button (red) - train is moving
-        screen.draw.filled_rect(button, (180, 0, 0))
-        screen.draw.rect(button, (100, 0, 0))
-        screen.draw.text("STOP", center=button.center, fontsize=32,
-                         color="white")
+    match state:
+        case State.STOPPED:
+            # DEPART button (green) - at station
+            screen.draw.filled_rect(button, (0, 180, 0))
+            screen.draw.rect(button, (0, 100, 0))
+            screen.draw.text("DEPART", center=button.center, fontsize=32,
+                             color="white")
+        case State.PAUSED:
+            # RESUME button (orange) - paused mid-journey
+            screen.draw.filled_rect(button, (255, 180, 0))
+            screen.draw.rect(button, (180, 120, 0))
+            screen.draw.text("RESUME", center=button.center, fontsize=32,
+                             color="white")
+        case State.ACCELERATING | State.CRUISING | State.DECELERATING:
+            # STOP button (red) - train is moving
+            screen.draw.filled_rect(button, (180, 0, 0))
+            screen.draw.rect(button, (100, 0, 0))
+            screen.draw.text("STOP", center=button.center, fontsize=32,
+                             color="white")
 
     # Status display
     if target_station == Destination.MIAMI:
