@@ -1,5 +1,6 @@
 """
 Simulation of a train running between New York City and Miami
+A multi-function button handles to train's movement
 """
 
 from enum import Enum
@@ -46,6 +47,7 @@ train_speed = 0
 MAX_SPEED = 4
 ACCELERATION = 0.05
 
+# Initial conditions
 state = State.STOPPED
 target_station = Destination.MIAMI  # Train starts at NYC, heads to Miami
 
@@ -54,7 +56,7 @@ button = Rect(400, 380, 100, 50)
 
 
 def draw():
-    # Sky background
+    # Background (sky)
     screen.fill((135, 206, 235))
 
     # Ground
@@ -180,6 +182,7 @@ def draw_train(x, track_y):
 def update():
     global train_x, train_speed, state, target_station
 
+    # Nothing to do this time
     if state in (State.STOPPED, State.PAUSED):
         return
 
