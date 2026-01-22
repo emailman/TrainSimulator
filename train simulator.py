@@ -118,7 +118,8 @@ def draw():
         route_text = "Silver Meteor - New York City to Miami"
     else:
         route_text = "Silver Meteor - Miami to New York City"
-    screen.draw.text(route_text, topleft=(20, 20), fontsize=28, color="black")
+    screen.draw.text(route_text, topleft=(20, 20),
+                     fontsize=28, color="black")
 
     dist_to_nyc = (train_x - STATION_NYC_X) * MILES_PER_PIXEL
     dist_to_miami = (STATION_MIAMI_X - train_x) * MILES_PER_PIXEL
@@ -253,18 +254,19 @@ def on_mouse_down(pos):
     if not button.collidepoint(pos):
         return
 
-    if state == State.STOPPED:
-        # GO button - start from station
-        sounds.whistle.play()
-        state = State.ACCELERATING
-    elif state == State.PAUSED:
-        # START button - resume from pause
-        sounds.whistle.play()
-        state = State.ACCELERATING
-    elif state in (State.ACCELERATING, State.CRUISING, State.DECELERATING):
-        # STOP button - begin braking
-        sounds.brake.play()
-        state = State.BRAKING
+    match state:
+        case State.STOPPED:
+            # GO button - start from station
+            sounds.whistle.play()
+            state = State.ACCELERATING
+        case State.PAUSED:
+            # START button - resume from pause
+            sounds.whistle.play()
+            state = State.ACCELERATING
+        case State.ACCELERATING | State.CRUISING | State.DECELERATING:
+            # STOP button - begin braking
+            sounds.brake.play()
+            state = State.BRAKING
 
 
 pgzrun.go()
