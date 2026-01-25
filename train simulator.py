@@ -64,9 +64,9 @@ def draw():
                             (210, 180, 140))
 
     # Draw tracks (rails and ties)
-    for x in range(50, 850, 30):
-        screen.draw.filled_rect(Rect(x, TRACK_Y + 6, 20, 8),
-                                (101, 67, 33))  # Ties
+    for x in range(55, 850, 30):
+        screen.draw.filled_rect(Rect(x, TRACK_Y + 5, 5, 10),
+                                (131, 67, 33))  # Ties
     screen.draw.filled_rect(Rect(50, TRACK_Y, 800, 5),
                             (80, 80, 80))  # Top rail
     screen.draw.filled_rect(Rect(50, TRACK_Y + 15, 800, 5),
