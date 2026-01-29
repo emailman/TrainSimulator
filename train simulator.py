@@ -268,5 +268,4 @@ def on_mouse_down(pos):
             sounds.brake.play()
             state = State.BRAKING
 
-
 pgzrun.go()
