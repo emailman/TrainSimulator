@@ -209,15 +209,15 @@ def update():
             state = State.CRUISING
 
     # Calculate stopping distance using physics: d = v^2 / (2*a)
-    stopping_distance = (train_speed ** 2) / (2 * ACCELERATION)\
-        if ACCELERATION > 0 else 0
+    stopping_distance = (train_speed ** 2) / (2 * ACCELERATION)
+        # if ACCELERATION > 0 else 0
 
     if target_station == Destination.MIAMI:
         train_x += train_speed
         distance_to_target = STATION_MIAMI_X - train_x
 
         # Start decelerating when we need to
-        if (distance_to_target <= stopping_distance + 5 and
+        if (distance_to_target <= stopping_distance and
                 state in (State.ACCELERATING, State.CRUISING)):
             sounds.brake.play()
             state = State.DECELERATING
@@ -235,7 +235,7 @@ def update():
         distance_to_target = train_x - STATION_NYC_X
 
         # Start decelerating when we need to
-        if (distance_to_target <= stopping_distance + 5 and
+        if (distance_to_target <= stopping_distance and
                 state in (State.ACCELERATING, State.CRUISING)):
             sounds.brake.play()
             state = State.DECELERATING
