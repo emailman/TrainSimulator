@@ -210,7 +210,6 @@ def update():
 
     # Calculate stopping distance using physics: d = v^2 / (2*a)
     stopping_distance = (train_speed ** 2) / (2 * ACCELERATION)
-        # if ACCELERATION > 0 else 0
 
     if target_station == Destination.MIAMI:
         train_x += train_speed
