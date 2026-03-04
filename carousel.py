@@ -50,7 +50,7 @@ def draw():
     screen.fill(WHITE)
 
     # Large gray carousel platform
-    pygame.draw.circle(screen.surface, GRAY, (CENTER_X, CENTER_Y - 100), CIRCLE_RADIUS)
+    pygame.draw.circle(screen.surface, GRAY, (CENTER_X, CENTER_Y - 80), CIRCLE_RADIUS)
 
     # START/STOP button
     label = "STOP" if running else "START"
@@ -65,7 +65,7 @@ def draw():
     hub_surf = pygame.Surface((hub_size, hub_size), pygame.SRCALPHA)
     hub_surf.fill(BLACK)
     rotated_hub = pygame.transform.rotate(hub_surf, -rotation)
-    hub_rect = rotated_hub.get_rect(center=(CENTER_X, CENTER_Y - 100))
+    hub_rect = rotated_hub.get_rect(center=(CENTER_X, CENTER_Y - 80))
     screen.surface.blit(rotated_hub, hub_rect)
 
     # Draw each carriage as a rotated rectangle tangent to the circle
@@ -74,7 +74,7 @@ def draw():
         angle_rad = math.radians(angle_deg)
 
         x = CENTER_X + CARRIAGE_RADIUS * math.cos(angle_rad)
-        y = CENTER_Y - 100 + CARRIAGE_RADIUS * math.sin(angle_rad)
+        y = CENTER_Y - 80 + CARRIAGE_RADIUS * math.sin(angle_rad)
 
         surf = pygame.Surface((CARRIAGE_WIDTH, CARRIAGE_HEIGHT), pygame.SRCALPHA)
         surf.fill(color)
