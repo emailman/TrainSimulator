@@ -77,7 +77,7 @@ def draw():
         # Rotate so the long axis lies tangent to the circle
         rotated = pygame.transform.rotate(surf, 90 - angle_deg)
         rect = rotated.get_rect(center=(int(x), int(y)))
-        screen.surface.blit(rotated, rect)
+        screen.blit(rotated, rect)
 
 
 def on_mouse_down(pos):
