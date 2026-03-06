@@ -54,12 +54,10 @@ def draw():
     # START/STOP button
     label = "STOP" if running else "START"
     btn_color = (200, 60, 60) if running else (60, 180, 60)
-    pygame.draw.rect(screen.surface, btn_color, BUTTON_RECT,
-                     border_radius=6)
-    pygame.draw.rect(screen.surface, BLACK, BUTTON_RECT, 2,
-                     border_radius=6)
-    screen.draw.text(label, centerx=BUTTON_RECT.centerx,
-                     centery=BUTTON_RECT.centery, fontsize=24, color=WHITE)
+    screen.draw.filled_rect(BUTTON_RECT, btn_color)
+    screen.draw.rect(BUTTON_RECT, BLACK)
+    screen.draw.text(label, center=BUTTON_RECT.center,
+                     fontsize=24, color=WHITE)
 
     # Center hub: static black circle
     screen.draw.filled_circle((CENTER_X, CENTER_Y - 80), 12, BLACK)
