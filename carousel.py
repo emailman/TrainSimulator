@@ -5,8 +5,6 @@ import math
 from pgzero import music
 from pgzero.screen import Screen
 
-screen: Screen
-
 WIDTH = 600
 HEIGHT = 700
 TITLE = "Carousel"
@@ -33,11 +31,11 @@ CARRIAGE_WIDTH = 45
 CARRIAGE_HEIGHT = 15
 CENTER_X = WIDTH // 2
 CENTER_Y = HEIGHT // 2
-
-rotation = 270.0  # start with magenta at the top (270° in screen coords)
-running = False
-
 BUTTON_RECT = Rect(240, 580, 120, 40)
+
+rotation = 270.0  # start with magenta at the top (270° in screen coordinates)
+running = False
+screen: Screen
 
 
 def update():
@@ -63,14 +61,8 @@ def draw():
     screen.draw.text(label, centerx=BUTTON_RECT.centerx,
                      centery=BUTTON_RECT.centery, fontsize=24, color=WHITE)
 
-    # Center hub: rotating black square
-    hub_size = 12
-    hub_surf = pygame.Surface((hub_size, hub_size),
-                              pygame.SRCALPHA)
-    hub_surf.fill(BLACK)
-    rotated_hub = pygame.transform.rotate(hub_surf, -rotation)
-    hub_rect = rotated_hub.get_rect(center=(CENTER_X, CENTER_Y - 80))
-    screen.surface.blit(rotated_hub, hub_rect)
+    # Center hub: static black circle
+    screen.draw.filled_circle((CENTER_X, CENTER_Y - 80), 12, BLACK)
 
     # Draw each carriage as a rotated rectangle tangent to the circle
     for i, color in enumerate(COLORS):
