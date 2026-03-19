@@ -12,17 +12,18 @@ TITLE = "Carousel"
 GRAY = (192, 192, 192)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+GREEN = (0, 125, 0)
 
 # 8 carriage colors, ordered clockwise from top
 COLORS = [
-    (255, 0, 255),  # magenta  (top / 12 o'clock)
-    (128, 128, 128),  # gray     (upper-right)
-    (255, 0, 0),  # red      (right / 3 o'clock)
-    (255, 165, 0),  # orange   (lower-right)
-    (255, 255, 0),  # yellow   (bottom / 6 o'clock)
-    (0, 255, 0),  # green    (lower-left)
-    (0, 255, 255),  # cyan     (left / 9 o'clock)
-    (0, 0, 200),  # blue     (upper-left)
+    (255, 0, 255),      # magenta  (top / 12 o'clock)
+    (128, 128, 128),    # gray     (upper-right)
+    (255, 0, 0),        # red      (right / 3 o'clock)
+    (255, 165, 0),      # orange   (lower-right)
+    (255, 255, 0),      # yellow   (bottom / 6 o'clock)
+    (0, 255, 0),        # green    (lower-left)
+    (0, 255, 255),      # cyan     (left / 9 o'clock)
+    (0, 0, 200),        # blue     (upper-left)
 ]
 
 CIRCLE_RADIUS = 220
@@ -33,8 +34,11 @@ CENTER_X = WIDTH // 2
 CENTER_Y = HEIGHT // 2
 BUTTON_RECT = Rect(240, 580, 120, 40)
 
-rotation = 270.0  # start with magenta at the top (270° in screen coordinates)
+# start with magenta at the top (270° in screen coordinates)
+rotation = 270.0
+
 running = False
+
 screen: Screen
 
 
@@ -45,7 +49,7 @@ def update():
 
 
 def draw():
-    screen.fill(WHITE)
+    screen.fill(GREEN)
 
     # Large gray carousel platform
     screen.draw.filled_circle((CENTER_X, CENTER_Y - 80),
@@ -75,9 +79,10 @@ def draw():
         surf.fill(color)
 
         # Rotate so the long axis lies tangent to the circle
-        rotated = pygame.transform.rotate(surf, 90 - angle_deg)
-        rect = rotated.get_rect(center=(int(x), int(y)))
-        screen.blit(rotated, rect)
+        # rotated = pygame.transform.rotate(surf, 90 - angle_deg)
+        # rect = rotated.get_rect(center=(int(x), int(y)))
+        # screen.blit(rotated, rect)
+        screen.blit(surf, (x - CARRIAGE_WIDTH / 2,y))
 
 
 def on_mouse_down(pos):
