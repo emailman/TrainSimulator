@@ -79,10 +79,9 @@ def draw():
         surf.fill(color)
 
         # Rotate so the long axis lies tangent to the circle
-        # rotated = pygame.transform.rotate(surf, 90 - angle_deg)
-        # rect = rotated.get_rect(center=(int(x), int(y)))
-        # screen.blit(rotated, rect)
-        screen.blit(surf, (x - CARRIAGE_WIDTH / 2,y))
+        rotated = pygame.transform.rotate(surf, 90 - angle_deg)
+        rect = rotated.get_rect(center=(int(x), int(y)))
+        screen.blit(rotated, rect)
 
 
 def on_mouse_down(pos):
