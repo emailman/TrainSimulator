@@ -5,6 +5,7 @@ keeping it on the screen
 
 import pgzrun
 from pgzero.actor import Actor
+from pgzero.loaders import sounds
 from pgzero.screen import Screen
 from pgzero.keyboard import keyboard
 from pygame import Rect
@@ -36,8 +37,10 @@ def update():
     # Keep the alien on the screen
     if runner.x > WIDTH - runner.width // 2:
         runner.x = WIDTH - runner.width // 2
+        sounds.eep.play()
     elif runner.x < runner.width // 2:
         runner.x = runner.width // 2
+        sounds.eep.play()
 
 def draw():
     screen.clear()
